@@ -1,11 +1,11 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { navGroups, products, solutions } from "@/data/site";
 
 export function Logo() {
   return (
     <Link className="logo" href="/" aria-label="Optimus AI home">
-      <Image
+      <img
         className="logo-image"
         src="/optimus-ai-logo.png"
         alt="OptimusAI"
