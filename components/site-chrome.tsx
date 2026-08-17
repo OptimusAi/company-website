@@ -1,13 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 import { navGroups, products, solutions } from "@/data/site";
 
 export function Logo() {
   return (
     <Link className="logo" href="/" aria-label="Optimus AI home">
-      <span className="logo-mark" aria-hidden="true">
-        O
-      </span>
-      <span>OPTIMUS AI</span>
+      <Image
+        className="logo-image"
+        src="/optimus-ai-logo.png"
+        alt="OptimusAI"
+        width={1023}
+        height={251}
+      />
     </Link>
   );
 }

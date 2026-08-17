@@ -36,6 +36,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Optimus AI",
   url: "https://optimus-ai.com",
+  logo: "https://optimus-ai.com/optimus-ai-logo.png",
   description: "AI agents for customer operations and finance.",
   address: { "@type": "PostalAddress", addressLocality: "Calgary", addressRegion: "Alberta", addressCountry: "CA" },
 };
