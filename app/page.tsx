@@ -81,7 +81,6 @@ export default function Home() {
               <Link className="button" href="/contact">Book a Demo <span>↗</span></Link>
               <Link className="button button-secondary" href="#products">Explore Optimus</Link>
             </div>
-            <div className="hero-note"><span>Built in Calgary.</span><span>Designed for businesses everywhere.</span></div>
           </div>
           <HeroSystem />
         </div>

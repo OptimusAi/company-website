@@ -1,17 +1,22 @@
-/* eslint-disable @next/next/no-img-element */
+"use client";
+
 import Link from "next/link";
 import { navGroups, products, solutions } from "@/data/site";
 
-export function Logo() {
+function closeNavigationMenus(event: React.MouseEvent<HTMLAnchorElement>) {
+  event.currentTarget
+    .closest("nav")
+    ?.querySelectorAll<HTMLDetailsElement>("details[open]")
+    .forEach((menu) => {
+      menu.open = false;
+    });
+}
+
+export function Logo({ variant = "header" }: { variant?: "header" | "footer" }) {
   return (
-    <Link className="logo" href="/" aria-label="Optimus AI home">
-      <img
-        className="logo-image"
-        src="/optimus-ai-logo.png"
-        alt="OptimusAI"
-        width={1023}
-        height={251}
-      />
+    <Link className={`logo logo-${variant}`} href="/" aria-label="Optimus AI home">
+      <span className="logo-orbit" aria-hidden="true" />
+      <span className="logo-wordmark">OPTIMUS <b>AI</b></span>
     </Link>
   );
 }
@@ -35,7 +40,7 @@ function NavGroup({
         </div>
         <div className="mega-links">
           {group.links.map((link) => (
-            <Link href={link.href} key={link.href}>
+            <Link href={link.href} key={link.href} onClick={closeNavigationMenus}>
               <span>{link.label}</span>
               <small>{link.note}</small>
             </Link>
@@ -75,23 +80,23 @@ export function Navbar() {
             <div className="mobile-links">
               <span className="eyebrow">Products</span>
               {products.map((product) => (
-                <Link href={`/products/${product.slug}`} key={product.slug}>
+                <Link href={`/products/${product.slug}`} key={product.slug} onClick={closeNavigationMenus}>
                   {product.name}
                   <small>{product.status}</small>
                 </Link>
               ))}
               <span className="eyebrow">Solutions</span>
               {solutions.map((solution) => (
-                <Link href={`/solutions/${solution.slug}`} key={solution.slug}>
+                <Link href={`/solutions/${solution.slug}`} key={solution.slug} onClick={closeNavigationMenus}>
                   {solution.name}
                 </Link>
               ))}
-              <Link href="/platform">Platform</Link>
-              <Link href="/security">Security</Link>
-              <Link href="/resources">Resources</Link>
-              <Link href="/company/about">Company</Link>
+              <Link href="/platform" onClick={closeNavigationMenus}>Platform</Link>
+              <Link href="/security" onClick={closeNavigationMenus}>Security</Link>
+              <Link href="/resources" onClick={closeNavigationMenus}>Resources</Link>
+              <Link href="/company/about" onClick={closeNavigationMenus}>Company</Link>
             </div>
-            <Link className="button" href="/contact">
+            <Link className="button" href="/contact" onClick={closeNavigationMenus}>
               Book a Demo
             </Link>
           </div>
@@ -106,9 +111,7 @@ export function Footer() {
     <footer className="footer">
       <div className="container footer-top">
         <div className="footer-brand">
-          <Logo />
-          <p>AI agents for customer operations and finance.</p>
-          <span>Built in Calgary. Designed for businesses everywhere.</span>
+          <Logo variant="footer" />
         </div>
         <div className="footer-columns">
           <div>
