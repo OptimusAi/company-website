@@ -21,6 +21,62 @@ const leadSchema = z.object({
   faxNumber: z.string().max(0).optional().or(z.literal("")),
 });
 
+type LeadSubmission = z.infer<typeof leadSchema>;
+
+const formLabels: Record<LeadSubmission["formType"], string> = {
+  demo: "Demo request",
+  contact: "Contact request",
+  "design-partner": "Design Partner application",
+};
+
+function createNotificationText(submission: LeadSubmission) {
+  const fields = [
+    ["Request type", formLabels[submission.formType]],
+    ["Name", submission.fullName],
+    ["Email", submission.email],
+    ["Company", submission.company],
+    ["Role / title", submission.role],
+    ["Company size", submission.companySize],
+    ["Website", submission.website],
+    ["Industry", submission.industry],
+    ["Product interest", submission.productInterest],
+    ["Workflow or request details", submission.details],
+    ["Desired outcome", submission.desiredOutcome],
+  ].filter((field): field is [string, string] => Boolean(field[1]));
+
+  return [
+    "A new request was submitted through the Optimus AI website.",
+    "",
+    ...fields.map(([label, value]) => `${label}:\n${value}`),
+  ].join("\n\n");
+}
+
+async function sendLeadNotification(submission: LeadSubmission) {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) throw new Error("RESEND_API_KEY is not configured.");
+
+  const recipient = submission.formType === "design-partner"
+    ? process.env.DESIGN_PARTNER_TO_EMAIL || "info@optimus-ai.com"
+    : process.env.DEMO_REQUEST_TO_EMAIL || "info@optimus-ai.com";
+  const sender = process.env.RESEND_FROM_EMAIL || "Optimus AI Website <info@optimus-ai.com>";
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from: sender,
+      to: [recipient],
+      reply_to: submission.email,
+      subject: `${formLabels[submission.formType]} — ${submission.fullName} at ${submission.company}`,
+      text: createNotificationText(submission),
+    }),
+  });
+
+  if (!response.ok) throw new Error(`Resend returned ${response.status}.`);
+}
+
 export async function POST(request: Request) {
   try {
     const parsed = leadSchema.safeParse(await request.json());
@@ -62,6 +118,15 @@ export async function POST(request: Request) {
       details: submission.details || null,
       desiredOutcome: submission.desiredOutcome || null,
     });
+
+    try {
+      await sendLeadNotification(submission);
+    } catch {
+      return Response.json(
+        { error: "Your request was saved, but the team notification could not be delivered. Please email info@optimus-ai.com directly." },
+        { status: 502 },
+      );
+    }
 
     return Response.json(
       { message: "Thank you. The Optimus team will review your request and follow up." },
