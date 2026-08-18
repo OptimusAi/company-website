@@ -4,6 +4,13 @@ import { SectionHeading, SiteShell } from "@/components/site-chrome";
 
 export const metadata: Metadata = { title: "About", description: "Optimus AI is a Calgary company building intelligent agents for business operations." };
 
+const executiveTeam = [
+  { name: "Venu Kannuri", role: "Co-founder, CEO & CTO" },
+  { name: "Hitesh Kumar", role: "Chief AI Officer" },
+  { name: "Guru Fateh", role: "Business Development Officer" },
+  { name: "Bansiben Patel", role: "System Administrator" },
+];
+
 export default function AboutPage() {
   return (
     <SiteShell>
@@ -15,6 +22,17 @@ export default function AboutPage() {
         ["Integrate thoughtfully", "Help teams improve their systems of work without unnecessary replacement."],
         ["Earn the platform", "Productize repeated patterns only after real workflows validate them."],
       ].map(([title, body], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p></article>)}</div></div></section>
+      <section className="section team-section dark-section">
+        <div className="container">
+          <h2 className="team-title">Meet our team</h2>
+          <div className="team-list-section">
+            <h3>Leadership team</h3>
+            <div className="team-list">
+              {executiveTeam.map((person) => <div key={person.name}><strong>{person.name}</strong><span>{person.role}</span></div>)}
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="section calgary-section"><div className="container control-grid"><div><span className="eyebrow">Calgary, Alberta</span><h2>Built in Calgary.<br />Designed for businesses everywhere.</h2></div><div className="prose"><p>Our home gives us proximity to service, construction, energy, professional-services, and finance teams doing complex operational work every day.</p><p>Our ambition extends well beyond geography: build durable AI products that businesses can trust with meaningful work.</p><Link href="/contact" className="arrow-link">Start a conversation <span>↗</span></Link></div></div></section>
     </SiteShell>
   );
